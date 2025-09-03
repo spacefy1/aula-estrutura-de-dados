@@ -26,14 +26,20 @@ void selectionSort(int *v, int n) {
 }
 
 void bubbleSort(int *v, int n) {
-	int i, j, aux, menor;
-	for (i = 0; i < n; i++) {
-		menor = i;
-		if(v[j] > v[menor+ 1]) {
-			aux = v[i];
-			aux = v[i + 1];
-		}
-	}
+	int i, aux, troca;
+	//mudei o bubble com uma logica melhor, pensando assim no tmepo de execuçao
+	do{
+	   troca = 0;
+	   for (i = 0; i < n-1; i++) {
+    		if(v[i] > v[i+ 1]) {
+    			aux = v[i];
+    			v[i] = v[i + 1];
+    			v[i + 1] = aux;
+    			troca = 1;
+    		}
+    	} 
+	}while(troca);
+    	
 }
 
 
