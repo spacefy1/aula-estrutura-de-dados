@@ -81,21 +81,18 @@ int altura_arvBin(ArvBin *raiz) {
 
 }
 
-
 void libera_NO(NO *no){
     if(no == NULL){
         return;
     }
-    
     libera_NO(no->esq);
     libera_NO(no->dir);
-    
     free(no);
     no = NULL;
 }
 
 void libera_ArvBin(ArvBin *raiz){
-    if(raiz ==NULL){
+    if(raiz == NULL){
         return;
     }
     libera_NO(*raiz);
@@ -103,11 +100,11 @@ void libera_ArvBin(ArvBin *raiz){
 }
 
 int insere_ArvBin(ArvBin *raiz, int valor){
-    if(raiz== NULL){
+    if(raiz == NULL){//validando a existencia da arvore
         return 0;
     }
-    
-    NO *novo = (NO*) malloc(sizeof(NO));
+    //criando o no que vai ser inserido
+    NO *novo  = (NO*) malloc (sizeof(NO));
     if(novo == NULL){
         return 0;
     }
@@ -115,19 +112,20 @@ int insere_ArvBin(ArvBin *raiz, int valor){
     novo->esq = NULL;
     novo->dir = NULL;
     
-    if(*raiz == NULL){//se a arvore esta vazia
+    //primeira possibilidade, a arvore é vazia.
+    if(*raiz == NULL){
         *raiz = novo;
     }
-    else{
+    else{//se nao for primeiro elemento
         NO *atual = *raiz;
         NO *ant = NULL;
-        while(atual!=NULL){
+        while(atual!=NULL){//percorre a arvore para achar o lugar de inserção.
             ant = atual;
-            if(valor == atual->info){
+            if(valor == atual->info){//verifica repetidos
                 free(novo);
                 return 0;
             }
-            if(valor>atual->info){
+            if(valor > atual->info){//escolhe o lado de caminhar.
                 atual = atual->dir;
             }else{
                 atual = atual->esq;
@@ -139,9 +137,70 @@ int insere_ArvBin(ArvBin *raiz, int valor){
             ant->esq = novo;
         }
     }
+    
     return 1;
 }
 
+NO* remove_atual(NO *atual){
+    NO *no1, *no2;
+    if(atual->esq == NULL){
+        no2 = atual->dir;
+        free(atual);
+        return no2;
+    }
+    
+    no1 = atual;
+    no2 = atual->esq;
+    
+    while (no2->dir !=NULL){
+        no1 = no2;
+        no2 = no2->dir;
+    }
+    
+    if(no1 != atual){
+        no1->dir = no2->esq;
+        no2->esq = atual->esq;
+    }
+    
+    no2->dir = atual->dir;
+    free(atual);
+    return no2;
+}
+
+int remove_ArvBin(ArvBin *raiz, int valor){
+    if(raiz == NULL){
+        return 0;
+    }
+    
+    NO *ant = NULL;
+    NO *atual = *raiz;
+    
+    while(atual != NULL){
+        if(valor == atual->info){
+            if(atual == *raiz){
+                *raiz = remove_atual(atual);
+            }
+            else{
+                if(ant->dir == atual){
+                    ant->dir = remove_atual(atual);
+                }else{
+                   ant->esq = remove_atual(atual);
+                }
+            }
+            
+            
+        }
+        ant = atual;
+        if(valor>atual->info){
+            atual = atual->dir;
+        }else{
+             atual = atual->esq;
+        }
+        
+    }
+    return 0;
+    
+}
 
 int main()
 {

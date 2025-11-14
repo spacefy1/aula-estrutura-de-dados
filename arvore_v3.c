@@ -81,6 +81,65 @@ int altura_arvBin(ArvBin *raiz) {
 
 }
 
+void libera_NO(NO *no){
+    if(no == NULL){
+        return;
+    }
+    libera_NO(no->esq);
+    libera_NO(no->dir);
+    free(no);
+    no = NULL;
+}
+
+void libera_ArvBin(ArvBin *raiz){
+    if(raiz == NULL){
+        return;
+    }
+    libera_NO(*raiz);
+    free(raiz);
+}
+
+int insere_ArvBin(ArvBin *raiz, int valor){
+    if(raiz == NULL){//validando a existencia da arvore
+        return 0;
+    }
+    //criando o no que vai ser inserido
+    NO *novo  = (NO*) malloc (sizeof(NO));
+    if(novo == NULL){
+        return 0;
+    }
+    novo->info = valor;
+    novo->esq = NULL;
+    novo->dir = NULL;
+    
+    //primeira possibilidade, a arvore é vazia.
+    if(*raiz == NULL){
+        *raiz = novo;
+    }
+    else{//se nao for primeiro elemento
+        NO *atual = *raiz;
+        NO *ant = NULL;
+        while(atual!=NULL){//percorre a arvore para achar o lugar de inserção.
+            ant = atual;
+            if(valor == atual->info){//verifica repetidos
+                free(novo);
+                return 0;
+            }
+            if(valor > atual->info){//escolhe o lado de caminhar.
+                atual = atual->dir;
+            }else{
+                atual = atual->esq;
+            }
+        }
+        if(valor>ant->info){
+            ant->dir = novo;
+        }else{
+            ant->esq = novo;
+        }
+    }
+    
+    return 1;
+}
 
 
 int main()
